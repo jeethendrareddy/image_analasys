@@ -1,0 +1,3 @@
+SVM -> MAE: 4.29, R²: 0.93
+RandomForest -> MAE: 2.92, R²: 0.91
+DecisionTree -> MAE: 4.08, R²: 0.73
