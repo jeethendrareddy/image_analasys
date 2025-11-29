@@ -1,5 +1,6 @@
 # feature_selection_and_eval.py
 import os
+import sys
 import joblib
 import numpy as np
 import pandas as pd
@@ -12,10 +13,13 @@ from sklearn.metrics import make_scorer, accuracy_score, r2_score
 from sklearn.pipeline import Pipeline
 from tqdm import tqdm
 
+# Add parent directory to path to import config
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import FEATURES_DENSENET_8, FEATURES_DIR, RANDOM_STATE
+
 # CONFIG
-FEATURES_CSV = r"D:\PyCharm Community Edition 2024.3.5\PROJECTS\Arhar_Khesari_Dal\Features\dal_features_3.csv"
-RANDOM_STATE = 42
-OUT_DIR = r"D:\PyCharm Community Edition 2024.3.5\PROJECTS\Arhar_Khesari_Dal\Features\dal_reduced_feature_1.csv"
+FEATURES_CSV = FEATURES_DENSENET_8['csv']
+OUT_DIR = os.path.join(FEATURES_DIR, "reduced_features")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 df = pd.read_csv(FEATURES_CSV)

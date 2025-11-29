@@ -1,4 +1,5 @@
 import os
+import sys
 import cv2
 import torch
 import numpy as np
@@ -9,16 +10,22 @@ from torchvision import transforms, models
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
+# Add parent directory to path to import config
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import DATA_DIR, DL_MODELS_DIR, RANDOM_STATE
+
 # ==============================
 # CONFIG
 # ==============================
-DATASET_DIR = r"D:\PyCharm Community Edition 2024.3.5\PROJECTS\Arhar_Khesari_Dal\Data"  # 📂 each class in its folder
-MODEL_DIR = r"D:\PyCharm Community Edition 2024.3.5\PROJECTS\Arhar_Khesari_Dal\DL_Models\Test-1"
+DATASET_DIR = DATA_DIR
+MODEL_DIR = DL_MODELS_DIR
 BATCH_SIZE = 32
 EPOCHS = 20
 LR = 1e-4
 IMG_SIZE = 128
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+os.makedirs(MODEL_DIR, exist_ok=True)
 
 # ==============================
 # Dataset Class
@@ -63,7 +70,7 @@ labels_encoded = le.fit_transform(all_labels)
 
 # Train-val split
 train_paths, val_paths, train_labels, val_labels = train_test_split(
-    all_paths, labels_encoded, test_size=0.2, random_state=42, stratify=labels_encoded
+    all_paths, labels_encoded, test_size=0.2, random_state=RANDOM_STATE, stratify=labels_encoded
 )
 
 # Transforms

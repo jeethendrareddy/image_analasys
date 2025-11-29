@@ -1,4 +1,5 @@
 import os
+import sys
 import joblib
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -9,21 +10,18 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_absolute_error, r2_score
 
-# ----------------------------
-# Paths
-# ----------------------------
-FEATURES_DIR = r"D:\PyCharm Community Edition 2024.3.5\PROJECTS\Arhar_Khesari_Dal\Features"
-MODELS_DIR = r"D:\PyCharm Community Edition 2024.3.5\PROJECTS\Arhar_Khesari_Dal\Models\Test-8"
-RESULTS_DIR = r"D:\PyCharm Community Edition 2024.3.5\PROJECTS\Arhar_Khesari_Dal\Results"
+# Add parent directory to path to import config
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import FEATURES_RESNET_7, MODELS_TEST_8_DIR, RESULTS_DIR, RANDOM_STATE
 
-os.makedirs(MODELS_DIR, exist_ok=True)
+os.makedirs(MODELS_TEST_8_DIR, exist_ok=True)
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 # ----------------------------
 # Load features & labels
 # ----------------------------
-X = np.load(os.path.join(FEATURES_DIR, "dal_features_7.npy"))
-y = np.load(os.path.join(FEATURES_DIR, "dal_labels_7.npy"))
+X = np.load(FEATURES_RESNET_7['features'])
+y = np.load(FEATURES_RESNET_7['labels'])
 
 print("✅ Loaded data:", X.shape, y.shape)
 
@@ -31,7 +29,7 @@ print("✅ Loaded data:", X.shape, y.shape)
 # Train-test split
 # ----------------------------
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+    X, y, test_size=0.2, random_state=RANDOM_STATE
 )
 
 # ----------------------------
@@ -39,8 +37,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 # ----------------------------
 models = {
     "SVM": make_pipeline(StandardScaler(), SVR(kernel="rbf", C=50, gamma="scale")),
-    "RandomForest": RandomForestRegressor(n_estimators=150, random_state=42),
-    "DecisionTree": DecisionTreeRegressor(random_state=42),
+    "RandomForest": RandomForestRegressor(n_estimators=150, random_state=RANDOM_STATE),
+    "DecisionTree": DecisionTreeRegressor(random_state=RANDOM_STATE),
 }
 
 results = []
@@ -57,7 +55,7 @@ for name, model in models.items():
     r2 = r2_score(y_test, preds)
 
     # Save model
-    model_path = os.path.join(MODELS_DIR, f"{name}_model.pkl")
+    model_path = os.path.join(MODELS_TEST_8_DIR, f"{name}_model.pkl")
     joblib.dump(model, model_path)
 
     print(f"✅ {name} saved at {model_path}")
@@ -68,7 +66,7 @@ for name, model in models.items():
 # ----------------------------
 # Save results
 # ----------------------------
-results_file = os.path.join(RESULTS_DIR, "model_comparision_Test-8.txt")
+results_file = os.path.join(RESULTS_DIR, "model_comparison_Test-8.txt")
 with open(results_file, "w") as f:
     f.write("\n".join(results))
 
