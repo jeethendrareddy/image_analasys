@@ -1,4 +1,5 @@
 import os
+import sys
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -7,9 +8,9 @@ from tensorflow.keras.applications.densenet import preprocess_input
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import Model
 
-# 📂 Paths
-DATA_DIR = r"D:\PyCharm Community Edition 2024.3.5\PROJECTS\Arhar_Khesari_Dal\Data"
-FEATURES_DIR = r"D:\PyCharm Community Edition 2024.3.5\PROJECTS\Arhar_Khesari_Dal\Features"
+# Add parent directory to path to import config
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import DATA_DIR, FEATURES_DIR, FEATURES_DENSENET_8
 
 os.makedirs(FEATURES_DIR, exist_ok=True)
 
@@ -59,12 +60,15 @@ print(f"✅ Features shape: {all_features.shape}")
 print(f"✅ Labels shape: {all_labels.shape}")
 
 # Save features and labels
-np.save(os.path.join(FEATURES_DIR, "DenseNet_features_8.npy"), all_features)
-np.save(os.path.join(FEATURES_DIR, "DenseNet_labels_8.npy"), all_labels)
+np.save(FEATURES_DENSENET_8['features'], all_features)
+np.save(FEATURES_DENSENET_8['labels'], all_labels)
 
 # Also save CSV for quick inspection
 df = pd.DataFrame(all_features)
 df["label"] = all_labels
-df.to_csv(os.path.join(FEATURES_DIR, "DenseNet_features_8.csv"), index=False)
+df.to_csv(FEATURES_DENSENET_8['csv'], index=False)
 
-print(f"\n🎉 DenseNet features saved in {FEATURES_DIR}")
+print(f"\n🎉 DenseNet features saved:")
+print(f"   - Features: {FEATURES_DENSENET_8['features']}")
+print(f"   - Labels: {FEATURES_DENSENET_8['labels']}")
+print(f"   - CSV: {FEATURES_DENSENET_8['csv']}")
